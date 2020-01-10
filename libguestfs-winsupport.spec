@@ -5,7 +5,7 @@
 
 Name:           libguestfs-winsupport
 Version:        7.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Add support for Windows guests to virt-v2v and virt-p2v
 
 URL:            http://www.ntfs-3g.org/
@@ -21,6 +21,9 @@ Source0:        http://tuxera.com/opensource/ntfs-3g_ntfsprogs-%{ntfs_version}.t
 
 Patch0:         ntfs-3g_ntfsprogs-2011.10.9-RC-ntfsck-unsupported-return-0.patch
 Patch1:         CVE-2015-3202.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=1301593#c8
+Patch2:         0001-unistr.c-Enable-encoding-broken-UTF-16-into-broken-U.patch
+Patch3:         0002-unistr.c-Unify-the-two-defines-NOREVBOM-and-ALLOW_BR.patch
 
 BuildRequires:  libtool, libattr-devel
 BuildRequires:  libconfig-devel, libgcrypt-devel, gnutls-devel, libuuid-devel
@@ -35,6 +38,8 @@ virt-v2v and virt-p2v programs.
 %setup -q -n ntfs-3g_ntfsprogs-%{ntfs_version}
 %patch0 -p1 -b .unsupported
 %patch1 -p1 -b .cve
+%patch2 -p1
+%patch3 -p1
 
 
 %build
@@ -96,6 +101,11 @@ popd
 
 
 %changelog
+* Wed Feb 22 2017 Richard W.M. Jones <rjones@redhat.com> - 7.2-2
+- Fix for handling guest filenames with invalid or incomplete
+  multibyte or wide characters
+  resolves: rhbz#1301593
+
 * Tue Jul 07 2015 Richard W.M. Jones <rjones@redhat.com> - 7.2-1
 - Rebase and rebuild for RHEL 7.2
   resolves: rhbz#1240278
