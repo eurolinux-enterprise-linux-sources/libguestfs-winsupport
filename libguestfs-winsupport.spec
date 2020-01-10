@@ -5,7 +5,7 @@
 
 Name:           libguestfs-winsupport
 Version:        7.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Add support for Windows guests to virt-v2v and virt-p2v
 
 URL:            http://www.ntfs-3g.org/
@@ -24,6 +24,8 @@ Patch1:         CVE-2015-3202.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1301593#c8
 Patch2:         0001-unistr.c-Enable-encoding-broken-UTF-16-into-broken-U.patch
 Patch3:         0002-unistr.c-Unify-the-two-defines-NOREVBOM-and-ALLOW_BR.patch
+# CVE-2019-9755 (https://bugzilla.redhat.com/show_bug.cgi?id=1698502)
+Patch4:         0001-Fixed-reporting-an-error-when-failed-to-build-the-mo.patch
 
 BuildRequires:  libtool, libattr-devel
 BuildRequires:  libconfig-devel, libgcrypt-devel, gnutls-devel, libuuid-devel
@@ -40,6 +42,7 @@ virt-v2v and virt-p2v programs.
 %patch1 -p1 -b .cve
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 
 %build
@@ -101,6 +104,11 @@ popd
 
 
 %changelog
+* Wed Apr 10 2017 Richard W.M. Jones <rjones@redhat.com> - 7.2-3
+- Fix for CVE-2019-9755
+  (heap-based buffer overflow leads to local root privilege escalation)
+  resolves: rhbz#1698502
+
 * Wed Feb 22 2017 Richard W.M. Jones <rjones@redhat.com> - 7.2-2
 - Fix for handling guest filenames with invalid or incomplete
   multibyte or wide characters
